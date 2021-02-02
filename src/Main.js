@@ -537,7 +537,7 @@ function Main() {
               value={toDate}
               disablePast
               ampm={false}
-              minDate={toDate}
+              minDate={fromDate}
               allowKeyboardControl
               style={{ width: 300 }}
               variant="dialog"
