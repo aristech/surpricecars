@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import Avatar from "@material-ui/core/Avatar";
-import { isAfter, isToday, format, addDays } from "date-fns";
+import { isAfter, isToday, format, addDays, addHours } from "date-fns";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
@@ -105,7 +105,7 @@ function Main() {
   });
   const [countries, setCountries] = useState(null);
   const [areas, setAreas] = useState(null);
-  const [fromDate, setFromDate] = useState(new Date());
+  const [fromDate, setFromDate] = useState(addDays(new Date(), 1));
   const [toDate, setToDate] = useState(addDays(new Date(), 7));
   const [check, setCheck] = useState(false);
   const [inputValueFrom, setInputValueFrom] = React.useState("");
@@ -127,12 +127,11 @@ function Main() {
     }
   }, [state.fromDP]);
 
-  useEffect(() => {
-    let dt;
-    if (fromDate) {
-      setToDate(addDays(fromDate, 7));
-    }
-  }, [fromDate]);
+  // useEffect(() => {
+  //   if (fromDate) {
+  //     checkMinHours();
+  //   }
+  // }, [fromDate]);
 
   useEffect(() => {
     let dp;
@@ -371,6 +370,26 @@ function Main() {
       fromDP: val,
     });
   };
+
+  const checkMinHours = (dt, form) => {
+    console.log("ok");
+    if (form === "from") {
+      if (dt < addHours(new Date(), 24)) {
+        setFromDate(addHours(new Date(), 24));
+        setToDate(addDays(fromDate, 7));
+      } else {
+        setFromDate(dt);
+        setToDate(addDays(dt, 7));
+      }
+    } else {
+      if (dt < fromDate) {
+        setToDate(addDays(fromDate, 7));
+      } else {
+        setToDate(dt);
+      }
+    }
+  };
+
   const classes = useStyles();
 
   return (
@@ -524,11 +543,12 @@ function Main() {
               value={fromDate}
               allowKeyboardControl
               disablePast
+              minDate={addHours(new Date(), 24)}
               ampm={false}
               style={{ width: 300 }}
               variant="dialog"
               minutesStep={5}
-              onChange={setFromDate}
+              onChange={(res) => checkMinHours(res, "from")}
               label="Pickup Date*"
               format="dd/MM/yyyy hh:mm a"
             />
@@ -542,7 +562,7 @@ function Main() {
               style={{ width: 300 }}
               variant="dialog"
               minutesStep={5}
-              onChange={setToDate}
+              onChange={(res) => checkMinHours(res, "to")}
               label="Drop off Date/Time*"
               format="dd/MM/yyyy hh:mm a"
             />
