@@ -498,7 +498,7 @@ function Main() {
                   renderInput={(params) => {
                     return (
                       <Fragment>
-                        <TextField {...params} label="Drop Of Location*">
+                        <TextField {...params} label="Drop Off Location*">
                           <Icon>{getIcon(params)}</Icon>
                         </TextField>
                       </Fragment>
